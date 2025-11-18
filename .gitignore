@@ -1,0 +1,23 @@
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# PowerShell
+*.ps1~
+*.swp
+*~
+
+# Runtime data
+*.log
+.last-window-info*.json
+hook-data*.json
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# Temporary files
+*.tmp
+*.temp
