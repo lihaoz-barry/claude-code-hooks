@@ -1,29 +1,29 @@
 # Claude Code Hooks
 
-Cross-platform automation hooks for Claude Code - get notifications and auto-focus when tasks complete.
+Cross-platform automation hooks and launchers for Claude Code - get notifications, auto-focus when tasks complete, and quickly launch Claude from any project folder.
 
 ## Overview
 
-This project provides hook scripts that integrate with Claude Code to:
+This project provides hook scripts and launcher utilities that integrate with Claude Code to:
 - Send desktop notifications when tasks complete
 - Send push notifications to your phone via ntfy.sh
 - Automatically activate your terminal window
 - Support multiple Claude Code sessions simultaneously
+- **Quick-launch Claude from any project folder** with portable launcher scripts
 
 ## Platform Support
 
-### Currently Supported
-- **Windows** ✅ - Full support with two hook implementations
-
-### Coming Soon
-- **Linux** 🚧 - Planned
-- **macOS** 🚧 - Planned
+| Platform | Hooks | Launchers | Status |
+|----------|-------|-----------|--------|
+| **Windows** | ✅ Full support | ✅ Full support | Production ready |
+| **macOS** | ✅ Full support | ✅ Full support | Production ready |
+| **Linux** | 🚧 Planned | 🚧 Planned | Coming soon |
 
 ## Features
 
-### Windows Implementation
+### Windows
 
-**Two hook modes available:**
+**Hooks (Task Completion Notifications):**
 
 1. **Desktop Notification Hook** (`cc-hook-fixed-title.ps1`)
    - Local Windows notifications
@@ -37,8 +37,22 @@ This project provides hook scripts that integrate with Claude Code to:
    - Remote monitoring of task completion
    - Perfect for long-running tasks
 
-**Quick launcher:**
+**Launchers (Quick Start):**
 - `claude-start.cmd` - Fast startup with proper configuration
+- `claude-here.bat` - **Portable launcher** - drop into any project folder, double-click to launch Claude
+
+### macOS
+
+**Hooks (Task Completion Notifications):**
+
+1. **Mobile Push + Desktop Hook** (`claude-stop-hook-with-ntfy.sh`)
+   - Native macOS desktop notifications with sound
+   - Push notifications to your phone via ntfy.sh
+   - Automatic terminal window activation (Terminal.app & iTerm2)
+   - Multi-project support via terminal title matching
+
+**Launchers (Quick Start):**
+- `claude-here.command` - **Portable launcher** - drop into any project folder, double-click to launch Claude with `--dangerously-skip-permissions` mode
 
 ## Quick Start (Windows)
 
@@ -46,7 +60,7 @@ This project provides hook scripts that integrate with Claude Code to:
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/YOUR_USERNAME/claude-code-hooks.git
+git clone https://github.com/lihaoz-barry/claude-code-hooks.git
 cd claude-code-hooks/windows
 ```
 
@@ -84,6 +98,8 @@ Use the launcher script for automatic setup:
 C:\path\to\claude-code-hooks\windows\launchers\claude-start.cmd
 ```
 
+Or use the portable launcher - copy `claude-here.bat` to any project folder and double-click it.
+
 Or manually:
 ```powershell
 # Set terminal title
@@ -93,24 +109,94 @@ $host.ui.RawUI.WindowTitle = "[Claude-ProjectName]"
 claude
 ```
 
+## Quick Start (macOS)
+
+### Installation
+
+1. Clone this repository:
+```bash
+git clone https://github.com/lihaoz-barry/claude-code-hooks.git
+```
+
+2. Make the scripts executable:
+```bash
+chmod +x mac/hooks/claude-stop-hook-with-ntfy.sh
+chmod +x mac/launchers/claude-here.command
+```
+
+3. Configure the hook in Claude Code:
+```bash
+# In Claude Code, run:
+/hooks
+# Select "Stop Hook" and enter:
+/path/to/claude-code-hooks/mac/hooks/claude-stop-hook-with-ntfy.sh
+```
+
+4. (Optional) Configure your ntfy.sh topic:
+```bash
+# Edit mac/hooks/claude-stop-hook-with-ntfy.sh
+# Change line 10 to your own topic:
+NTFY_TOPIC="your_unique_topic_name"
+```
+
+5. Test the hook:
+```
+# Ask Claude to do something simple, then check for notifications
+```
+
+### Using the Portable Launcher
+
+1. Copy `mac/launchers/claude-here.command` to any project folder
+
+2. Make it executable (if needed):
+```bash
+chmod +x claude-here.command
+```
+
+3. Double-click the file to launch Claude Code in that directory
+
+### How the Launcher Works
+- The `.command` file is double-clickable in Finder
+- Automatically detects the project directory
+- **Sets terminal title to `[Claude-ProjectName]`** for easy identification
+- Launches Claude Code with `--dangerously-skip-permissions` flag
+- Shows a banner with project name and directory
+- Works with both Terminal.app and iTerm2
+
+### How the Hook Works
+- When Claude completes a task, the hook triggers automatically
+- Sends push notification to your phone via ntfy.sh
+- Shows native macOS desktop notification with sound
+- Attempts to activate the terminal window with matching `[Claude-ProjectName]` title
+
 ## Project Structure
 
 ```
 claude-code-hooks/
-├── windows/
-│   ├── hooks/
-│   │   ├── cc-hook-fixed-title.ps1           # Desktop notification hook
-│   │   └── claude-stop-hook-with-ntfy.ps1    # Desktop + mobile push hook
-│   ├── launchers/
-│   │   ├── claude-start.cmd                  # Quick start script
-│   │   ├── start-claude.ps1                  # PowerShell launcher
-│   │   └── claude-start-with-window-recording.ps1
-│   └── docs/
-│       ├── QUICK-START.md
-│       ├── COMPLETE-SETUP-INSTRUCTIONS.md
-│       └── ntfy通知配置说明.md
-├── linux/                                     # Coming soon
-├── macos/                                     # Coming soon
+├── docs/                                      # Documentation
+│   ├── QUICK-START.md                         # Quick reference guide
+│   ├── COMPLETE-SETUP-INSTRUCTIONS.md         # Detailed setup guide
+│   └── ntfy通知配置说明.md                     # ntfy.sh config (Chinese)
+│
+├── windows/                                   # Windows platform
+│   ├── hooks/                                 # Task completion hooks
+│   │   ├── cc-hook-fixed-title.ps1            # Desktop notification hook
+│   │   ├── claude-stop-hook-with-ntfy.ps1     # Desktop + mobile push hook
+│   │   └── claude-stop-hook-window-activator.ps1
+│   └── launchers/                             # Quick start scripts
+│       ├── claude-here.bat                    # Portable launcher (drop & run)
+│       ├── claude-start.cmd                   # Quick start script
+│       ├── start-claude.ps1                   # PowerShell launcher
+│       └── claude-start-with-window-recording.ps1
+│
+├── mac/                                       # macOS platform
+│   ├── hooks/                                 # Task completion hooks
+│   │   └── claude-stop-hook-with-ntfy.sh      # Desktop + mobile push hook
+│   └── launchers/                             # Quick start scripts
+│       └── claude-here.command                # Portable launcher (drop & run)
+│
+├── linux/                                     # Linux platform (coming soon)
+│
 └── README.md
 ```
 
@@ -122,10 +208,18 @@ To enable mobile push notifications:
 
 1. Install ntfy app on your phone ([iOS](https://apps.apple.com/app/ntfy/id1625396347) / [Android](https://play.google.com/store/apps/details?id=io.heckel.ntfy))
 
-2. Edit `windows/hooks/claude-stop-hook-with-ntfy.ps1`:
+2. Edit the hook file for your platform:
+
+**Windows:** Edit `windows/hooks/claude-stop-hook-with-ntfy.ps1`:
 ```powershell
 # Line 88: Change to your topic
 $ntfyUrl = "https://ntfy.sh/YOUR_UNIQUE_TOPIC_NAME"
+```
+
+**macOS:** Edit `mac/hooks/claude-stop-hook-with-ntfy.sh`:
+```bash
+# Line 10: Change to your topic
+NTFY_TOPIC="YOUR_UNIQUE_TOPIC_NAME"
 ```
 
 3. Subscribe to the same topic in your ntfy app
@@ -144,37 +238,47 @@ See `docs/ntfy通知配置说明.md` for detailed instructions (Chinese).
 
 ## Documentation
 
-- `docs/QUICK-START.md` - Quick reference guide
-- `docs/COMPLETE-SETUP-INSTRUCTIONS.md` - Detailed setup instructions
-- `docs/ntfy通知配置说明.md` - ntfy.sh configuration (Chinese)
+- [docs/QUICK-START.md](docs/QUICK-START.md) - Quick reference guide
+- [docs/COMPLETE-SETUP-INSTRUCTIONS.md](docs/COMPLETE-SETUP-INSTRUCTIONS.md) - Detailed setup instructions
+- [docs/ntfy通知配置说明.md](docs/ntfy通知配置说明.md) - ntfy.sh configuration (Chinese)
 
 ## Roadmap
 
-- [x] Windows implementation
+- [x] **Windows implementation**
   - [x] Desktop notifications
-  - [x] Mobile push notifications
+  - [x] Mobile push notifications (ntfy.sh)
   - [x] Auto window activation
   - [x] Multi-project support
-- [ ] Linux implementation
+  - [x] Portable launcher (`claude-here.bat`)
+- [x] **macOS implementation**
+  - [x] Portable launcher (`claude-here.command`)
+  - [x] Desktop notifications
+  - [x] Mobile push notifications (ntfy.sh)
+  - [x] Window activation hooks
+- [ ] **Linux implementation**
   - [ ] Desktop notifications (libnotify)
   - [ ] Mobile push notifications
   - [ ] Window activation
-- [ ] macOS implementation
-  - [ ] Desktop notifications
-  - [ ] Mobile push notifications
-  - [ ] Window activation
+  - [ ] Portable launcher
 
 ## Requirements
 
 ### Windows
 - Windows 10/11
 - PowerShell 5.1+
-- Claude Code
+- Claude Code CLI installed
+- Optional: ntfy mobile app for push notifications
+
+### macOS
+- macOS 10.15+ (Catalina or later)
+- Claude Code CLI installed (`npm install -g @anthropic-ai/claude-code`)
+- `curl` (pre-installed on macOS)
+- Optional: `jq` for better JSON parsing (`brew install jq`)
 - Optional: ntfy mobile app for push notifications
 
 ## Contributing
 
-Contributions are welcome! Especially for Linux and macOS implementations.
+Contributions are welcome! Especially for Linux implementations.
 
 ## License
 
@@ -186,4 +290,6 @@ For issues, questions, or suggestions, please open an issue on GitHub.
 
 ---
 
-**Ready to start? Check out the Windows quick start guide above!**
+**Ready to start?**
+- **Windows users:** Check out the [Windows Quick Start](#quick-start-windows) guide above
+- **macOS users:** Check out the [macOS Quick Start](#quick-start-macos) guide above
