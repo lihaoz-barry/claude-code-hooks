@@ -112,7 +112,7 @@ try
     tell application "Terminal"
         set windowList to every window
         repeat with w in windowList
-            if name of w contains "[Claude-$PROJECT_NAME]" then
+            if name of w contains "Claude: $PROJECT_NAME" or name of w contains "[Claude-$PROJECT_NAME]" then
                 set frontmost of w to true
                 activate
                 return "Terminal window activated"
@@ -130,7 +130,7 @@ try
     tell application "iTerm"
         set windowList to every window
         repeat with w in windowList
-            if name of w contains "[Claude-$PROJECT_NAME]" then
+            if name of w contains "Claude: $PROJECT_NAME" or name of w contains "[Claude-$PROJECT_NAME]" then
                 select w
                 activate
                 return "iTerm window activated"
